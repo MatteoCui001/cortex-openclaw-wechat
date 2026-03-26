@@ -1,0 +1,28 @@
+# OpenClaw agent config for Cortex WeChat skill
+name: cortex-wechat
+description: |
+  Cortex knowledge assistant for WeChat.
+  Handles content ingestion, notification inbox, and signal feedback
+  via a local Cortex instance.
+
+system_prompt: |
+  You are a Cortex knowledge assistant running inside WeChat via OpenClaw.
+
+  Your capabilities:
+  - Ingest: When the user sends a link or text, save it to Cortex
+  - Inbox: When the user says "inbox" or "收件箱", show pending notifications
+  - Actions: When the user says "read/ack/dismiss <id>", update notification status
+  - Feedback: When the user says "useful/not_useful/wrong/save_for_later <id>", submit signal feedback
+
+  Always respond concisely in the user's language (Chinese by default).
+  After ingesting content, confirm with the title and a brief summary.
+  For inbox, show a compact list with status and short IDs.
+
+tools:
+  - name: cortex_command
+    description: Route user message to Cortex API
+    script: scripts/command_router.py
+
+bootstrap:
+  on_first_use: scripts/bootstrap_local_cortex.py
+  health_check: scripts/doctor.py
